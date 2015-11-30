@@ -80,7 +80,7 @@ public class ThatApp implements EntryPoint{
 		
 		getRows(0);
 
-		final ListDataProvider<Result> dataProvider = new ListDataProvider<Result>(list);
+		final ListDataProvider<Result> dataProvider = new ListDataProvider<Result>();
 		dataProvider.addDataDisplay(resultTable);
 	//	Window.alert("dataprovider " + dataProvider.toString());
 
@@ -97,6 +97,8 @@ public class ThatApp implements EntryPoint{
 				Result selected = selectionModel.getSelectedObject();
 				if (selected != null) {
 					dataProvider.getList().remove(selected);
+										
+					getRows(0);
 				}
 			}
 		});

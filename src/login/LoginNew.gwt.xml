@@ -5,7 +5,7 @@
 -->
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.6.1//EN"
   "file:///C:/Users/maksim_palchevskii/Downloads/gwt-2.6.1/gwt-module.dtd">
-<module rename-to='loginnew'>
+<module rename-to='logingwt'>
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
 
@@ -20,7 +20,7 @@
   <!-- Other module inherits                                      -->
 
   <!-- Specify the app entry point class.                         -->
-  <entry-point class='login.client.LoginNew'/>
+  <entry-point class='login.client.LoginGWT'/>
 
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>

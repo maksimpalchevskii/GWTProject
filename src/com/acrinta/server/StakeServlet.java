@@ -248,7 +248,7 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 			List<Result> result = mapper.getRaceData(raceId);
 			// org.apache.log4j.BasicConfigurator.configure();
 			mapper.getRaceData(raceId);
-			// logger.info(" " + raceId + " " + " result size" + result.size());
+			logger.info(" " + raceId + " " + " result size" + result.size());
 			return result;
 		} finally {
 			session.close();
