@@ -1,0 +1,2 @@
+serviceClass: com.stakes.client.login.LoginService
+path: F7FE86381020FF56785242CCBC252287.gwt.rpc
