@@ -101,12 +101,6 @@ public class ClientForm extends Composite {
 		raceType.addItem("Ultra Race (10 horses, 3 winners)", "ultraChallengeValue");
 		raceType.setWidth("160px");
 
-		/*
-		 * raceType.addChangeHandler(new ChangeHandler() {
-		 * 
-		 * @Override public void onChange(ChangeEvent event) {
-		 */
-
 		VerticalPanel verticalPanel = new VerticalPanel();
 		panel.add(verticalPanel);
 
@@ -166,11 +160,6 @@ public class ClientForm extends Composite {
 				}
 			}
 		});
-
-		/*
-		 * horseNum.addItem("5"); horseNum.addItem("6"); horseNum.addItem("7");
-		 * horseNum.addItem("8"); horseNum.addItem("9"); horseNum.addItem("10");
-		 */
 
 		raceType.setWidth("160px");
 

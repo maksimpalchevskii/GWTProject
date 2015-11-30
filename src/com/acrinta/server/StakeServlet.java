@@ -6,13 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-
-import org.eclipse.jetty.util.log.Log;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import com.acrinta.client.module_a.StakeService;
 import com.acrinta.shared.Result;
@@ -20,12 +19,15 @@ import com.acrinta.shared.Stake;
 import com.acrinta.shared.StakeMapper;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+@SuppressWarnings("serial")
 public class StakeServlet extends RemoteServiceServlet implements StakeService {
+
+	static final Logger logger = LogManager.getLogger(StakeServlet.class.getName());
 
 	/**
 	 * 
 	 */
-	
+
 	private static final long serialVersionUID = 1L;
 	final static double bookmakerPart = 0.25;
 	private static int horse;
@@ -36,7 +38,7 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 	private static float winnersSumm;
 	private static int allStakesSumm;
 	private static SqlSessionFactory sqlSessionFactory;
-	
+
 	static {
 		try {
 			Reader resourceReader = Resources.getResourceAsReader("resources/config.xml");
@@ -86,10 +88,10 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 			int newStakeSumm = summ / 2 + summ / 5 * rand.nextInt(10);
 			stake.setSumm(newStakeSumm);
 			stakeSummary.add(stake);
-			System.out.print(stake.getHorseNumber() + " ");
 			allStakesSumm = allStakesSumm + newStakeSumm;
+			
+			
 
-			//
 			if (stake.getHorseNumber() == winnerHorse1) {
 				Stake winnerStakeEntity = new Stake();
 				winnerStakeEntity.setHorseNumber(winnerHorse1);
@@ -115,22 +117,22 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 			}
 		}
 
-		System.out.println("\n" + allStakesSumm + " allStakesSumm");
-		System.out.println(winnersSumm + " winnersSumm");
+		logger.info("\n" + allStakesSumm + " allStakesSumm");
+		logger.info(winnersSumm + " winnersSumm");
 
 		float coefficient = allStakesSumm / winnersSumm;
 
-		System.out.println("coefficient = " + coefficient);
+		logger.info("coefficient = " + coefficient);
 
 		switch (raceType) {
 
 		case 1:
 			if (horseNumber == winnerHorse1) {
 				winSumm = summ * coefficient * (1.00 - bookmakerPart);
-				System.out.println("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
+				logger.info("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
 				break;
 			} else {
-				System.out.println("Sorry that happened, you win nothing : (");
+				logger.info("Sorry that happened, you win nothing : (");
 				break;
 			}
 
@@ -138,15 +140,15 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 			if (horseNumber == winnerHorse2 | horseNumber == winnerHorse1) {
 				if (horseNumber == winnerHorse1) {
 					winSumm = summ * coefficient * (1.00 - bookmakerPart);
-					System.out.println("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
+					logger.info("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
 					break;
 				} else {
 					winSumm = summ * coefficient * (1.00 - bookmakerPart) / 1.2;
-					System.out.println("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
+					logger.info("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
 					break;
 				}
 			} else {
-				System.out.println("Sorry that happened, you win nothing : (");
+				logger.info("Sorry that happened, you win nothing : (");
 				break;
 			}
 
@@ -154,24 +156,24 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 			if (horseNumber == winnerHorse3 | horseNumber == winnerHorse2 | horseNumber == winnerHorse1) {
 				if (horseNumber == winnerHorse1) {
 					winSumm = summ * coefficient * (1.00 - bookmakerPart);
-					System.out.println("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
+					logger.info("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
 					break;
 				}
 				if (horseNumber == winnerHorse2) {
 					winSumm = summ * coefficient * (1.00 - bookmakerPart) / 1.2;
-					System.out.println("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
+					logger.info("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
 					break;
 				} else {
 					winSumm = summ * coefficient * (1.00 - bookmakerPart) / 1.5;
-					System.out.println("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
+					logger.info("Your stake was " + summ + ", You win " + (int) winSumm + " excellent job!");
 					break;
 				}
 			} else {
-				System.out.println("Sorry that happened, you win nothing : (" + winnersSumm);
+				logger.info("Sorry that happened, you win nothing : (" + winnersSumm);
 				break;
 			}
 		}
-		
+
 		int bookmakerProfit = (int) (allStakesSumm * bookmakerPart);
 
 		// TODO all this stuff is going to DB
@@ -191,19 +193,18 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 		}
 	}
 
-	private void setRaceResultToDB(Integer raceType, Integer winnerHorse1, Integer bookmakerProfit, Integer allStakesSumm) {
+	private void setRaceResultToDB(Integer raceType, Integer winnerHorse1, Integer bookmakerProfit,
+			Integer allStakesSumm) {
 		SqlSession session = sqlSessionFactory.openSession();
 		try {
 			StakeMapper mapper = session.getMapper(StakeMapper.class);
-			
-		mapper.setRaceResult(raceType, winnerHorse1, bookmakerProfit, allStakesSumm);
-		session.commit();
+
+			mapper.setRaceResult(raceType, winnerHorse1, bookmakerProfit, allStakesSumm);
+			session.commit();
 		} finally {
 			session.close();
 		}
 	}
-	
-	
 
 	public static void getWinner(int raceType) {
 		Random rnd = new Random();
@@ -211,7 +212,7 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 		switch (raceType) {
 		case 1:
 			winnerHorse1 = 1 + rnd.nextInt(4);
-			System.out.println("horse " + winnerHorse1 + " wins");
+			logger.info("horse " + winnerHorse1 + " wins");
 			break;
 		case 2:
 			winnerHorse1 = 1 + rnd.nextInt(6);
@@ -219,8 +220,8 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 			while (winnerHorse2 == winnerHorse1) {
 				winnerHorse2 = 1 + rnd.nextInt(6);
 			}
-			System.out.println("horse " + winnerHorse1 + " wins");
-			System.out.println("horse " + winnerHorse2 + " came second");
+			logger.info("horse " + winnerHorse1 + " wins");
+			logger.info("horse " + winnerHorse2 + " came second");
 			break;
 		case 3:
 			winnerHorse1 = 1 + rnd.nextInt(8);
@@ -232,9 +233,9 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 			while (winnerHorse3 == winnerHorse1 | winnerHorse3 == winnerHorse2) {
 				winnerHorse3 = 1 + rnd.nextInt(8);
 			}
-			System.out.println("horse " + winnerHorse1 + " wins");
-			System.out.println("horse " + winnerHorse2 + " came second");
-			System.out.println("horse " + winnerHorse3 + " came third");
+			logger.info("horse " + winnerHorse1 + " wins");
+			logger.info("horse " + winnerHorse2 + " came second");
+			logger.info("horse " + winnerHorse3 + " came third");
 			break;
 		}
 	}
@@ -245,10 +246,10 @@ public class StakeServlet extends RemoteServiceServlet implements StakeService {
 		try {
 			StakeMapper mapper = session.getMapper(StakeMapper.class);
 			List<Result> result = mapper.getRaceData(raceId);
-		//	org.apache.log4j.BasicConfigurator.configure();
-		mapper.getRaceData(raceId);
-	//	logger.info(" " + raceId + " " + " result size" + result.size());
-		return result;
+			// org.apache.log4j.BasicConfigurator.configure();
+			mapper.getRaceData(raceId);
+			// logger.info(" " + raceId + " " + " result size" + result.size());
+			return result;
 		} finally {
 			session.close();
 		}
